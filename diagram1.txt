@@ -1,46 +1,38 @@
-import java.util.List;
 import java.util.ArrayList;
 
 // Seqence Diagram 1: Hazard / Delay Reporting
 abstract class User {
-    protected String userID;
-    protected String firstName;
-    protected String lastName;
+    protected String userID = "";
+    protected String firstName = "";
+    protected String lastName = "";
 
     public boolean isAuthenticated() {
-        return true;
+        return true; // Placeholder
     }
 }
 
 public class BusDriver extends User {
-    private String driverLicenseNumber;
-}
-
-public class BusDispatchOfficer extends User {
-    private String assignedDepot;
+    private String driverLicenseNumber = "";
 }
 
 class Location {
-    private double latitude;
-    private double longitude;
-    private double currentBusSpeed;
+    private double latitude = 0.0; // Placeholder
+    private double longitude = 0.0; // Placeholder
+    private double currentBusSpeed = 0.0; // Placeholder
 
     public Location(double latitude, double longitude, double speed) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.currentBusSpeed = speed;
     }
-
-    public double getLatitude() {
-        return latitude; 
-    }
-    public double getLongitude() {
-        return longitude;
-    }
 }
 
 class LocationService {
 	private ArrayList<Location> locations = new ArrayList<>();
+
+    public LocationService() {
+        locations.add(new Location(37.8136, 144.9631, 0.0)); // Placeholder
+    }
 
     public Location getCurrentLocation() {
         int numLocations = locations.size();
@@ -49,8 +41,8 @@ class LocationService {
 }
 
 public class BusConsoleUI {
-    private String parsedText;
-    public  String reportType;
+    private String parsedText = ""; // Placeholder
+    public  String reportType = "Hazard"; // Placeholder
 
     public void listenForSpeech() {}
 
@@ -77,13 +69,21 @@ public class BusConsoleUI {
 }
 
 class Database {
-    private String status;
+    private String status = "Success"; // Placeholder
 
     public void submitReport(Report report) {}
 
     public String getDatabaseStatus() {
         return status;
     }
+}
+
+class DispatchSystem {
+    public void escalateReport(Report report) {}
+}
+
+class PublicTransportAPI {
+    public void publishIncident(Report report) {}
 }
 
 abstract class Report {
@@ -114,6 +114,8 @@ public class BusGuideanceController {
     private BusConsoleUI ui = new BusConsoleUI();
     private LocationService locationService = new LocationService();
     private Database db = new Database();
+    private DispatchSystem dispatchSystem = new DispatchSystem();
+    private PublicTransportAPI publicAPI = new PublicTransportAPI();
     private Report activeReport;
 
     public void initialiseReport(BusDriver driver, String reportMethod) {
@@ -121,15 +123,16 @@ public class BusGuideanceController {
             return;
         }
 
+        String reportType;
         if (reportMethod.equals("Voice")) {
             ui.listenForSpeech();
             String parsedText = ui.processSpeechToText();
             ui.displayParsedText(parsedText);
             
-            // IMPLEMENT IN SEQUENCE: OBJECT?
-            String reportType = ui.getParsedReportType();
+            // TODO: IMPLEMENT IN SEQUENCE: OBJECT?
+            reportType = ui.getParsedReportType();
         } else {
-            String reportType = ui.selectReportType();
+            reportType = ui.selectReportType();
         }
 
         Location currentLocation = locationService.getCurrentLocation();
@@ -142,9 +145,10 @@ public class BusGuideanceController {
         }
 
         db.submitReport(activeReport);
+        dispatchSystem.publishIncident(activeReport);
+        publicAPI.publishIncident(activeReport);
+
         String status = db.getDatabaseStatus();
-        // escalateReport
-        // publishIncidentToAPI
 
         if (status.equals("Success")) {
             ui.displaySuccessNotification();
@@ -156,6 +160,7 @@ public class BusGuideanceController {
     }
     
     private String getCurrentTime() {
-        return "";
+        String currentTime = "2026-01-01 00:00:00"; // Placeholder
+        return currentTime;
     }
 }
