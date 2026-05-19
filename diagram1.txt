@@ -1,0 +1,161 @@
+import java.util.List;
+import java.util.ArrayList;
+
+// Seqence Diagram 1: Hazard / Delay Reporting
+abstract class User {
+    protected String userID;
+    protected String firstName;
+    protected String lastName;
+
+    public boolean isAuthenticated() {
+        return true;
+    }
+}
+
+public class BusDriver extends User {
+    private String driverLicenseNumber;
+}
+
+public class BusDispatchOfficer extends User {
+    private String assignedDepot;
+}
+
+class Location {
+    private double latitude;
+    private double longitude;
+    private double currentBusSpeed;
+
+    public Location(double latitude, double longitude, double speed) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.currentBusSpeed = speed;
+    }
+
+    public double getLatitude() {
+        return latitude; 
+    }
+    public double getLongitude() {
+        return longitude;
+    }
+}
+
+class LocationService {
+	private ArrayList<Location> locations = new ArrayList<>();
+
+    public Location getCurrentLocation() {
+        int numLocations = locations.size();
+        return locations.get(numLocations - 1);
+    }
+}
+
+public class BusConsoleUI {
+    private String parsedText;
+    public  String reportType;
+
+    public void listenForSpeech() {}
+
+    public void displayParsedText(String text) {
+        System.out.println("Parsed Text: " + text);
+    }
+
+    public String processSpeechToText() {
+        return parsedText;
+    }
+
+    public String getParsedReportType() {
+        return reportType;
+    }
+
+    public String selectReportType() {
+        return reportType;
+    }
+
+    public void displaySuccessNotification() {}
+    public void displayRetryNotification() {}
+    public void audibleConfirmation(String string) {}
+    public void audibleRetryAlert(String string) {}
+}
+
+class Database {
+    private String status;
+
+    public void submitReport(Report report) {}
+
+    public String getDatabaseStatus() {
+        return status;
+    }
+}
+
+abstract class Report {
+    protected String reportID;
+    protected Location currentLocation;
+    protected String timeStamp;
+}
+
+class DelayReport extends Report {
+    public DelayReport(Location currentLocation, String timeStamp) { 
+        this.currentLocation = currentLocation; 
+        this.timeStamp = timeStamp;
+    }
+
+    // TOOD
+}
+
+class HazardReport extends Report {
+    public HazardReport(Location currentLocation, String timeStamp) {
+        this.currentLocation = currentLocation; 
+        this.timeStamp = timeStamp;
+    }
+
+    // TODO
+}
+
+public class BusGuideanceController {
+    private BusConsoleUI ui = new BusConsoleUI();
+    private LocationService locationService = new LocationService();
+    private Database db = new Database();
+    private Report activeReport;
+
+    public void initialiseReport(BusDriver driver, String reportMethod) {
+        if (!driver.isAuthenticated()) {
+            return;
+        }
+
+        if (reportMethod.equals("Voice")) {
+            ui.listenForSpeech();
+            String parsedText = ui.processSpeechToText();
+            ui.displayParsedText(parsedText);
+            
+            // IMPLEMENT IN SEQUENCE: OBJECT?
+            String reportType = ui.getParsedReportType();
+        } else {
+            String reportType = ui.selectReportType();
+        }
+
+        Location currentLocation = locationService.getCurrentLocation();
+        String timeStamp = getCurrentTime();
+
+        if (reportType.equals("Hazard")) {
+            activeReport = new HazardReport(currentLocation, timeStamp);
+        } else {
+            activeReport = new DelayReport(currentLocation, timeStamp);
+        }
+
+        db.submitReport(activeReport);
+        String status = db.getDatabaseStatus();
+        // escalateReport
+        // publishIncidentToAPI
+
+        if (status.equals("Success")) {
+            ui.displaySuccessNotification();
+            ui.audibleConfirmation("Report Sent Successfully");
+        } else {
+            ui.displayRetryNotification();
+            ui.audibleRetryAlert("Report Failure, please try again.");
+        }
+    }
+    
+    private String getCurrentTime() {
+        return "";
+    }
+}
