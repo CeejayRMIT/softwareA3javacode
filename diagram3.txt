@@ -1,0 +1,145 @@
+import java.util.ArrayList;
+
+// Sequence Diagram 2: Route Deviation and Automatic Detour
+
+class Location {
+    private double latitude;
+    private double longitude;
+
+    public Location(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+}
+
+class Route {
+    private String routeID;
+    private ArrayList<Location> stops = new ArrayList<>();
+
+    public Route(String routeID) {
+        this.routeID = routeID;
+    }
+
+    public String getRouteID() {
+        return routeID;
+    }
+}
+
+class GPSService {
+    public Location getCurrentLocation() {
+        // TODO: retrieve live GPS coordinates
+        return new Location(0.0, 0.0);
+    }
+}
+
+class TrafficService {
+    public String retrieveTrafficData() {
+        // TODO: fetch real-time traffic data
+        return "";
+    }
+
+    public Route calculateAlternativeRoute(String trafficData) {
+        // TODO: compute best detour based on traffic data
+        return new Route("DETOUR_ROUTE");
+    }
+}
+
+class RouteService {
+    private Database database = new Database();
+
+    public Route getAssignedRoute() {
+        return database.fetchRouteData();
+    }
+
+    public boolean compareRoute(Location coordinates) {
+        // TODO: compare current location against planned route
+        // returns true if deviation detected
+        return false;
+    }
+
+    public void saveUpdatedRoute(Route detourRoute) {
+        database.saveRoute(detourRoute);
+    }
+}
+
+class Database {
+    public Route fetchRouteData() {
+        // TODO: query database for assigned route
+        return new Route("ROUTE_56");
+    }
+
+    public void saveRoute(Route route) {
+        // TODO: persist updated route to database
+    }
+}
+
+class BusConsoleUI {
+    public void displayContinueNavigation() {}
+
+    public void notifyDeviation() {}
+
+    public void displayDetourGuidance(Route detourRoute) {}
+
+    public void resumeGuidance() {}
+}
+
+class GuidanceController {
+    private BusConsoleUI ui = new BusConsoleUI();
+    private GPSService gpsService = new GPSService();
+    private TrafficService trafficService = new TrafficService();
+    private RouteService routeService = new RouteService();
+    private Route assignedRoute;
+    private boolean tripActive;
+
+    public void initialiseNavigation() {
+        assignedRoute = routeService.getAssignedRoute();
+        tripActive = true;
+
+        // loop while trip active
+        while (tripActive) {
+            Location coordinates = gpsService.getCurrentLocation();
+            boolean deviationStatus = routeService.compareRoute(coordinates);
+
+            // alt: [no route deviation] / [route deviation]
+            if (!deviationStatus) {
+                ui.displayContinueNavigation();
+            } else {
+                ui.notifyDeviation();
+
+                String trafficData = trafficService.retrieveTrafficData();
+                Route detourRoute = trafficService.calculateAlternativeRoute(trafficData);
+
+                ui.displayDetourGuidance(detourRoute);
+            }
+
+            // TODO: implement trip active condition
+            tripActive = false;
+        }
+    }
+
+    public void updateNavigation(Route detourRoute) {
+        routeService.saveUpdatedRoute(detourRoute);
+        // TODO: handle confirmation from RouteService
+        ui.resumeGuidance();
+    }
+}
+
+class BusDriver {
+    public void startTrip() {
+        GuidanceController controller = new GuidanceController();
+        controller.initialiseNavigation();
+    }
+
+    public void acceptDetourRoute(Route detourRoute) {
+        GuidanceController controller = new GuidanceController();
+        controller.updateNavigation(detourRoute);
+    }
+}
