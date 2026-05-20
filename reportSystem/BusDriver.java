@@ -1,12 +1,18 @@
-//first actor 
-public class BusDriver {
-    private String userID = "";
-    private String firstName = "";
-    private String lastName = "";
+public class BusDriver extends User {
     private String driverLicenseNumber = "";
+    private boolean isAuthenticated = true; // Placeholder
 
-    //does the actvity in ref opertor first
+    public BusDriver(String driverLicenseNumber) {
+        this.driverLicenseNumber = driverLicenseNumber;
+    }
+
     public void startReportingProcess(TouchScreenVoiceUI ui) {
-        ui.initialiseReport();
+        if (isAuthenticated(driverLicenseNumber)){
+            ui.initialiseReport("Voice");
+        }
+    }
+
+    public boolean isAuthenticated(String driverLicenseNumber) {
+        return isAuthenticated;
     }
 }

@@ -1,57 +1,49 @@
 public class TouchScreenVoiceUI {
-    private String parsedText = ""; //placeholder
-    private String reportType = "Hazard"; //placeholder
+    private String parsedText = ""; // Placeholder
+    private String reportType = "Hazard"; // Placeholder
 
-    //called by by bus driver 
-    public void initialiseReport() {
-        //"Touch" or "Voice" as input
-        String reportMethod = "Voice";
-
-        //first alt operator
+    //"Touch" or "Voice" as input
+    public void initialiseReport(String reportMethod) {
         if (reportMethod.equals("Voice")) {
-            //called on itself
             listenForSpeech();
 
-            //called on Guidance controller
-            GuidanceController.processSpeechToText("Dummy string");
+            parsedText = GuidanceController.processSpeechToText();
 
-            //return arrow from Guidance Controller
             displayParsedText(parsedText);
         }
-
-        //second part of alt operator
         else {
-            //called on Touch Screen & Voice UI
-            selectReportType();
+            reportType = selectReportType();
             
-            //called on Guidance Controller
-            GuidanceController.submitManualReport();
+            GuidanceController.submitManualReport(reportType);
         }
     }
 
-    //first alt operator
-    public void listenForSpeech() {}
-
-    public void selectReportType() {}
-
-    public void displayParsedText(String text) {
-        System.out.println("Parsed Text: " + text);
+    public void listenForSpeech() {
+        // Listen for speech into audio
     }
 
-    //third alt operator
+    public String selectReportType() {
+        String reportType = "Hazard"; // Placeholder
+        return reportType;
+    }
+
+    public void displayParsedText(String text) {
+        System.out.println("Parsed Text: " + text); // Placeholder
+    }
+
     public void displaySuccessNotification() {
-        audibleConfirmation("Report Sent Successfully");
+        audibleConfirmation("Report Sent Successfully"); // Placeholder
     }
 
     public void displayRetryNotification() {
-        audibleRetryAlert("Report Failed, please try again.");
+        audibleRetryAlert("Report Failed, please try again."); // Placeholder
     }
 
     public void audibleConfirmation(String message) {
-        //Voice confirmation
+        // Voice confirmation
     }
 
     public void audibleRetryAlert(String message) {
-        //Voice rejection
+        // Voice rejection
     }
 }
