@@ -1,10 +1,7 @@
-//first actor
 public class BusDriver {
-
-    //first arrow
+    // first arrow
     public void startTrip() {}
 
-    //after alt operator
+    // after alt operator
     public void acceptDetourRoute(){}
-
 }

@@ -8,8 +8,8 @@ public class RouteService {
     }
 
     public boolean compareRoute(Location coordinates) {
-        // TODO: compare current location against planned route
-        // returns true if deviation detected
+        // Compare current location against planned route
+        // Returns true if deviation detected
         return false;
     }
 

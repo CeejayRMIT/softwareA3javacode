@@ -1,4 +1,3 @@
-//GuidanceController.java
 public class GuidanceController {
     private BusConsoleUI ui = new BusConsoleUI();
     private GPSService gpsService = new GPSService();
@@ -9,13 +8,13 @@ public class GuidanceController {
     public void initialiseNavigation() {
         // Arrow points straight to Database
         Route assignedRoute = db.fetchRouteData();
-        this.tripActive = true; //dummy value
+        this.tripActive = true; // Placeholder
 
         while (tripActive) {
             Location coordinates = gpsService.getCurrentLocation();
             boolean deviationStatus = routeService.compareRoute(coordinates);
 
-            //alt: [no route deviation] / [route deviation]
+            // Alt: [no route deviation] / [route deviation]
             if (!deviationStatus) { 
                 ui.displayContinueNavigation(); // Arrow points from Controller to UI
             }
@@ -31,11 +30,11 @@ public class GuidanceController {
 
     public void notifyDeviation() {
     Route assignedRoute = db.fetchRouteData();
-        //arrow points from Controller back to UI
+        // Arrow points from Controller back to UI
         ui.displayDetourGuidance(assignedRoute);
     }
 
-    //arrow points from BusConsoleUI into GuidanceController
+    // Arrow points from BusConsoleUI into GuidanceController
     public void updateNavigation(Route detourRoute) {
         routeService.saveUpdatedRoute(detourRoute);
         ui.resumeGuidance();
